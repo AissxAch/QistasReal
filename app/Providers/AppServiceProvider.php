@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Notifications\VerifyEmail;
 use App\Models\Notification;
 use App\Models\Subscription;
 use App\Models\User;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
@@ -24,6 +26,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        VerifyEmail::toMailUsing(function (object $notifiable, string $url) {
+            return (new MailMessage)
+                ->subject('تأكيد بريدك الإلكتروني على قسطاس')
+                ->view('emails.verify-email', [
+                    'user' => $notifiable,
+                    'verificationUrl' => $url,
+                ]);
+        });
+
         View::composer('*', function ($view) {
             if (Auth::check()) {
                 $user = Auth::user();

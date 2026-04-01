@@ -119,8 +119,50 @@
                 </div>
             @endif
         @else
-            <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700">
-                لا يوجد اشتراك نشط
+            <div class="space-y-4">
+                <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-semibold text-amber-700">
+                    لا يوجد اشتراك نشط
+                </div>
+
+                @if(Auth::user()?->isOwner())
+                    <form method="POST" action="{{ route('subscription.purchase-basic') }}" class="rounded-2xl border border-gray-200 p-5 space-y-4">
+                        @csrf
+                        <h3 class="text-base font-extrabold text-gray-900">طلب شراء الخطة الأساسية</h3>
+                        <p class="text-sm text-gray-600">يمكنك إرسال طلب شراء الخطة الأساسية وسيظهر مباشرة في لوحة السوبر أدمن للمراجعة والاعتماد.</p>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">طريقة الدفع</label>
+                            <select name="payment_method" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" required>
+                                <option value="ccp">CCP</option>
+                                <option value="bank_transfer">تحويل بنكي</option>
+                                <option value="cash">دفع مباشر</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">رقم المرجع / العملية</label>
+                            <input type="text" name="transaction_id" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" placeholder="اختياري">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">ملاحظات</label>
+                            <textarea name="note" rows="3" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" placeholder="مثال: تم الإيداع في CCP اليوم صباحًا"></textarea>
+                        </div>
+
+                        <div class="rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-700">
+                            مبلغ الخطة الأساسية: <span class="font-extrabold text-gray-900">2,500.00 DZD</span>
+                        </div>
+
+                        <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1c5bb8] text-white text-sm font-bold hover:bg-[#174a95] transition">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>إرسال طلب شراء الخطة الأساسية</span>
+                        </button>
+                    </form>
+                @else
+                    <div class="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+                        هذا الطلب متاح فقط لمالك المكتب.
+                    </div>
+                @endif
             </div>
         @endif
     </section>

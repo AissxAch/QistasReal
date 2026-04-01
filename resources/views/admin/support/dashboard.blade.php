@@ -4,9 +4,15 @@
 
 @section('content')
 <div class="space-y-6">
-    <div>
-        <h1 class="text-2xl font-extrabold text-slate-900">لوحة دعم المنصة</h1>
-        <p class="text-sm text-slate-500 mt-1">اختر مكتبًا أولاً، ثم ادخل إلى أقسامه التشغيلية (القضايا، العملاء، المهام...).</p>
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+        <div>
+            <h1 class="text-2xl font-extrabold text-slate-900">لوحة دعم المنصة</h1>
+            <p class="text-sm text-slate-500 mt-1">اختر مكتبًا أولاً، ثم ادخل إلى أقسامه التشغيلية (القضايا، العملاء، المهام...).</p>
+        </div>
+        <a href="{{ route('admin.law-firms.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white text-slate-700 text-sm font-semibold hover:bg-slate-50 transition">
+            <i class="fas fa-city"></i>
+            <span>إدارة المكاتب</span>
+        </a>
     </div>
 
     <section class="bg-white rounded-2xl border border-slate-200 p-5">

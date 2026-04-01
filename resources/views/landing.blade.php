@@ -820,7 +820,7 @@
               </div>
               <div class="form-group">
                 <label for="email">البريد الإلكتروني</label>
-                <input type="email" id="email" name="email" placeholder="name@example.com" autocomplete="email" dir="ltr">
+                <input type="email" id="email" name="email" placeholder="achouri.aissa@outlook.com" autocomplete="email" dir="ltr">
                 <span class="field-error" id="emailError"></span>
               </div>
               <div class="form-group">

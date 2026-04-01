@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\SupportDashboardController;
 use App\Http\Controllers\Admin\SubscriptionAdminController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\AuditLogController;
+use App\Http\Controllers\Admin\LawFirmAdminController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\SessionController;
@@ -33,6 +34,12 @@ Route::middleware(['auth', 'verified', 'admin.only'])->group(function () {
         Route::patch('{subscription}/status', [SubscriptionAdminController::class, 'updateSubscriptionStatus'])->name('status');
         Route::patch('{subscription}/enterprise', [SubscriptionAdminController::class, 'updateEnterprise'])->name('enterprise.update');
         Route::patch('payments/{payment}/status', [SubscriptionAdminController::class, 'updatePaymentStatus'])->name('payments.status');
+    });
+
+    Route::prefix('admin/law-firms')->name('admin.law-firms.')->group(function () {
+        Route::get('/', [LawFirmAdminController::class, 'index'])->name('index');
+        Route::post('/', [LawFirmAdminController::class, 'store'])->name('store');
+        Route::post('/owners', [LawFirmAdminController::class, 'storeOwner'])->name('owners.store');
     });
 });
 
@@ -78,6 +85,7 @@ Route::middleware(['auth', 'verified', 'non_admin', 'subscription.access'])->gro
     // Subscription
     Route::get('subscription', [SubscriptionController::class, 'index'])->name('subscription');
     Route::post('subscription/renew', [SubscriptionController::class, 'renew'])->name('subscription.renew');
+    Route::post('subscription/purchase-basic', [SubscriptionController::class, 'purchaseBasic'])->name('subscription.purchase-basic');
 
     // Settings (firm + personal profile only — password handled by Jetstream /profile)
     Route::get('settings',          [SettingsController::class, 'index'])        ->name('settings');

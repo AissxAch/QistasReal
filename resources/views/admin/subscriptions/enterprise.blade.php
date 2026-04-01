@@ -15,6 +15,44 @@
         </a>
     </div>
 
+    <section class="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-4">
+            <h2 class="text-base font-extrabold text-gray-900">تصفية الحسابات المؤسسية</h2>
+            <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold">
+                النتائج: {{ number_format($enterpriseSubscriptions->total()) }}
+            </span>
+        </div>
+
+        <form method="GET" action="{{ route('admin.subscriptions.enterprise') }}" class="grid grid-cols-1 md:grid-cols-4 gap-3">
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">الحالة</label>
+                <select name="enterprise_status" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
+                    <option value="all" @selected(($enterpriseStatus ?? 'all') === 'all')>الكل</option>
+                    <option value="active" @selected(($enterpriseStatus ?? 'all') === 'active')>active</option>
+                    <option value="trial" @selected(($enterpriseStatus ?? 'all') === 'trial')>trial</option>
+                    <option value="expired" @selected(($enterpriseStatus ?? 'all') === 'expired')>expired</option>
+                    <option value="suspended" @selected(($enterpriseStatus ?? 'all') === 'suspended')>suspended</option>
+                    <option value="cancelled" @selected(($enterpriseStatus ?? 'all') === 'cancelled')>cancelled</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">بحث بالبريد الإلكتروني</label>
+                <input type="text" name="enterprise_email" value="{{ $enterpriseEmail ?? '' }}" placeholder="example@email.com" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" dir="ltr">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">بحث عام (مكتب/رقم عقد/اسم حساب)</label>
+                <input type="text" name="enterprise_search" value="{{ $enterpriseSearch ?? '' }}" placeholder="اسم المكتب أو رقم العقد" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
+            </div>
+
+            <div class="flex items-end gap-2">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-[#1c5bb8] text-white text-sm font-semibold hover:bg-[#174a95] transition">تطبيق</button>
+                <a href="{{ route('admin.subscriptions.enterprise') }}" class="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition">إعادة تعيين</a>
+            </div>
+        </form>
+    </section>
+
     @if(session('success'))
         <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-emerald-700 text-sm font-semibold">
             {{ session('success') }}
@@ -38,14 +76,31 @@
     @endif
 
     @forelse($enterpriseSubscriptions as $subscription)
+        @php
+            $status = strtolower((string) $subscription->status);
+            $statusClass = match ($status) {
+                'active' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
+                'trial' => 'bg-amber-100 text-amber-700 border-amber-200',
+                'expired', 'suspended', 'cancelled' => 'bg-red-100 text-red-700 border-red-200',
+                default => 'bg-gray-100 text-gray-700 border-gray-200',
+            };
+            $statusLabel = match ($status) {
+                'active' => 'نشط',
+                'trial' => 'تجريبي',
+                'expired' => 'منتهي',
+                'suspended' => 'معلّق',
+                'cancelled' => 'ملغي',
+                default => $subscription->status,
+            };
+        @endphp
         <section class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between mb-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4 pb-4 border-b border-gray-100">
                 <div>
                     <h2 class="text-lg font-extrabold text-gray-900">{{ $subscription->lawFirm->name ?? '—' }}</h2>
                     <p class="text-xs text-gray-500">{{ $subscription->lawFirm->email ?? '—' }}</p>
                 </div>
-                <span class="inline-flex items-center px-3 py-1 rounded-full border text-xs font-bold {{ $subscription->status === 'active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-amber-100 text-amber-700 border-amber-200' }}">
-                    {{ $subscription->status }}
+                <span class="inline-flex items-center px-3 py-1 rounded-full border text-xs font-bold {{ $statusClass }}">
+                    {{ $statusLabel }}
                 </span>
             </div>
 

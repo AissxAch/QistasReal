@@ -29,6 +29,12 @@ class ResetUserPassword implements ResetsUserPasswords
         $wasPendingActivation = $user->invited_at !== null && $user->activated_at === null;
         $originalInvitationExpiresAt = $user->getOriginal('invitation_expires_at');
 
+        if ($wasPendingActivation && (!$user->invitation_expires_at || $user->invitation_expires_at->isPast())) {
+            throw ValidationException::withMessages([
+                'email' => 'انتهت صلاحية دعوة التفعيل. يرجى طلب إعادة إرسال الدعوة من مالك المكتب.',
+            ]);
+        }
+
         $user->forceFill([
             'password' => Hash::make($input['password']),
             'activated_at' => $wasPendingActivation ? now() : $user->activated_at,

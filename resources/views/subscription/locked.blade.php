@@ -69,9 +69,9 @@
                         <i class="fas fa-comments"></i>
                         تواصل مع الدعم لبدء اشتراك أساسي
                     </a>
-                    <a href="mailto:admin@qistas.com" class="inline-flex items-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 text-sm font-semibold px-4 py-2.5 transition">
+                    <a href="mailto:achouri.aissa@outlook.com" class="inline-flex items-center gap-2 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 text-sm font-semibold px-4 py-2.5 transition">
                         <i class="fas fa-envelope"></i>
-                        admin@qistas.com
+                        achouri.aissa@outlook.com
                     </a>
                 @endif
 

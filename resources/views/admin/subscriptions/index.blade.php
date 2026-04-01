@@ -9,10 +9,16 @@
             <h1 class="text-2xl font-extrabold text-gray-900">لوحة إدارة الاشتراكات</h1>
             <p class="text-sm text-gray-500 mt-1">إدارة مركزية لاشتراكات جميع المكاتب مع مراجعة الدفع اليدوي (CCP / تحويل بنكي).</p>
         </div>
-        <a href="{{ route('admin.subscriptions.enterprise') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1c5bb8] text-white text-sm font-semibold hover:bg-[#174a95] transition">
-            <i class="fas fa-building"></i>
-            <span>إدارة الحسابات المؤسسية</span>
-        </a>
+        <div class="flex flex-wrap items-center gap-2">
+            <a href="{{ route('admin.law-firms.index') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-gray-200 bg-white text-gray-700 text-sm font-semibold hover:bg-gray-50 transition">
+                <i class="fas fa-city"></i>
+                <span>إدارة المكاتب</span>
+            </a>
+            <a href="{{ route('admin.subscriptions.enterprise') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1c5bb8] text-white text-sm font-semibold hover:bg-[#174a95] transition">
+                <i class="fas fa-building"></i>
+                <span>إدارة الحسابات المؤسسية</span>
+            </a>
+        </div>
     </div>
 
     @if(session('success'))
@@ -124,13 +130,60 @@
     </section>
 
     <section class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-        <h2 class="text-lg font-bold text-gray-900 mb-4">الاشتراكات الحالية</h2>
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-4">
+            <div>
+                <h2 class="text-lg font-bold text-gray-900">الاشتراكات الحالية</h2>
+                <p class="text-xs text-gray-500 mt-1">فلترة سريعة حسب الخطة/الحالة أو البحث بالبريد الإلكتروني.</p>
+            </div>
+            <span class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-bold">
+                النتائج: {{ number_format($subscriptions->total()) }}
+            </span>
+        </div>
+
+        <form method="GET" action="{{ route('admin.subscriptions.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-4 gap-3">
+            <input type="hidden" name="pending_type" value="{{ $pendingType ?? 'all' }}">
+            <input type="hidden" name="pending_email" value="{{ $pendingEmail ?? '' }}">
+
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">الخطة</label>
+                <select name="subscription_plan" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
+                    <option value="all" @selected(($subscriptionPlan ?? 'all') === 'all')>الكل</option>
+                    <option value="basic" @selected(($subscriptionPlan ?? 'all') === 'basic')>basic</option>
+                    <option value="office" @selected(($subscriptionPlan ?? 'all') === 'office')>office</option>
+                    <option value="premium" @selected(($subscriptionPlan ?? 'all') === 'premium')>premium</option>
+                    <option value="enterprise" @selected(($subscriptionPlan ?? 'all') === 'enterprise')>enterprise</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">الحالة</label>
+                <select name="subscription_status" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
+                    <option value="all" @selected(($subscriptionStatus ?? 'all') === 'all')>الكل</option>
+                    <option value="active" @selected(($subscriptionStatus ?? 'all') === 'active')>active</option>
+                    <option value="trial" @selected(($subscriptionStatus ?? 'all') === 'trial')>trial</option>
+                    <option value="expired" @selected(($subscriptionStatus ?? 'all') === 'expired')>expired</option>
+                    <option value="suspended" @selected(($subscriptionStatus ?? 'all') === 'suspended')>suspended</option>
+                    <option value="cancelled" @selected(($subscriptionStatus ?? 'all') === 'cancelled')>cancelled</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">بحث بالبريد الإلكتروني</label>
+                <input type="text" name="subscription_email" value="{{ $subscriptionEmail ?? '' }}" placeholder="example@email.com" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" dir="ltr">
+            </div>
+
+            <div class="flex items-end gap-2">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-[#1c5bb8] text-white text-sm font-semibold hover:bg-[#174a95] transition">تطبيق</button>
+                <a href="{{ route('admin.subscriptions.index', ['pending_type' => $pendingType ?? 'all', 'pending_email' => $pendingEmail ?? '']) }}" class="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition">إعادة تعيين</a>
+            </div>
+        </form>
 
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead>
-                    <tr class="border-b border-gray-200 text-gray-500">
+                    <tr class="border-b border-gray-200 bg-gray-50/80 text-gray-500">
                         <th class="text-right py-3 px-2">المكتب</th>
+                        <th class="text-right py-3 px-2">البريد</th>
                         <th class="text-right py-3 px-2">الخطة</th>
                         <th class="text-right py-3 px-2">الحالة</th>
                         <th class="text-right py-3 px-2">الانتهاء</th>
@@ -148,12 +201,21 @@
                                 'expired', 'cancelled', 'suspended' => 'bg-red-100 text-red-700 border-red-200',
                                 default => 'bg-gray-100 text-gray-700 border-gray-200',
                             };
+                            $statusLabel = match($status) {
+                                'active' => 'نشط',
+                                'trial' => 'تجريبي',
+                                'expired' => 'منتهي',
+                                'suspended' => 'معلّق',
+                                'cancelled' => 'ملغي',
+                                default => $subscription->status,
+                            };
                         @endphp
-                        <tr class="border-b border-gray-100 last:border-0">
+                        <tr class="border-b border-gray-100 last:border-0 hover:bg-gray-50/70 transition">
                             <td class="py-3 px-2 font-semibold text-gray-900">{{ $subscription->lawFirm->name ?? '—' }}</td>
+                            <td class="py-3 px-2 text-gray-600" dir="ltr">{{ $subscription->lawFirm->email ?? '—' }}</td>
                             <td class="py-3 px-2">{{ $subscription->plan }}</td>
                             <td class="py-3 px-2">
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold {{ $statusClass }}">{{ $subscription->status }}</span>
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-full border text-xs font-bold {{ $statusClass }}">{{ $statusLabel }}</span>
                             </td>
                             <td class="py-3 px-2">{{ optional($subscription->ends_at)->format('Y-m-d') ?? '—' }}</td>
                             <td class="py-3 px-2">{{ number_format((float)$subscription->amount, 2) }} {{ $subscription->currency }}</td>
@@ -172,7 +234,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="py-6 text-center text-gray-500">لا توجد اشتراكات</td>
+                            <td colspan="7" class="py-6 text-center text-gray-500">لا توجد اشتراكات</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -187,11 +249,37 @@
     <section class="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
         <h2 class="text-lg font-bold text-gray-900 mb-4">المدفوعات المعلقة للمراجعة</h2>
 
+        <form method="GET" action="{{ route('admin.subscriptions.index') }}" class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <input type="hidden" name="subscription_plan" value="{{ $subscriptionPlan ?? 'all' }}">
+            <input type="hidden" name="subscription_status" value="{{ $subscriptionStatus ?? 'all' }}">
+            <input type="hidden" name="subscription_email" value="{{ $subscriptionEmail ?? '' }}">
+
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">نوع الطلب</label>
+                <select name="pending_type" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm">
+                    <option value="all" @selected(($pendingType ?? 'all') === 'all')>الكل</option>
+                    <option value="new_subscription" @selected(($pendingType ?? 'all') === 'new_subscription')>اشتراك جديد</option>
+                    <option value="renewal" @selected(($pendingType ?? 'all') === 'renewal')>تجديد</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-600 mb-1">بحث بالبريد الإلكتروني</label>
+                <input type="text" name="pending_email" value="{{ $pendingEmail ?? '' }}" placeholder="example@email.com" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" dir="ltr">
+            </div>
+
+            <div class="flex items-end gap-2">
+                <button type="submit" class="px-4 py-2 rounded-xl bg-[#1c5bb8] text-white text-sm font-semibold hover:bg-[#174a95] transition">تطبيق</button>
+                <a href="{{ route('admin.subscriptions.index', ['subscription_plan' => $subscriptionPlan ?? 'all', 'subscription_status' => $subscriptionStatus ?? 'all', 'subscription_email' => $subscriptionEmail ?? '']) }}" class="px-4 py-2 rounded-xl border border-gray-200 text-gray-700 text-sm font-semibold hover:bg-gray-50 transition">إعادة تعيين</a>
+            </div>
+        </form>
+
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead>
                     <tr class="border-b border-gray-200 text-gray-500">
                         <th class="text-right py-3 px-2">المكتب</th>
+                        <th class="text-right py-3 px-2">الطلب</th>
                         <th class="text-right py-3 px-2">المبلغ</th>
                         <th class="text-right py-3 px-2">الطريقة</th>
                         <th class="text-right py-3 px-2">الحالة</th>
@@ -200,8 +288,19 @@
                 </thead>
                 <tbody>
                     @forelse($pendingPayments as $payment)
+                        @php
+                            $requestType = data_get($payment->payment_data, 'request_type');
+                            $requestedPlan = data_get($payment->payment_data, 'requested_plan');
+                        @endphp
                         <tr class="border-b border-gray-100 last:border-0">
                             <td class="py-3 px-2 font-semibold text-gray-900">{{ $payment->lawFirm->name ?? '—' }}</td>
+                            <td class="py-3 px-2">
+                                @if($requestType === 'new_subscription')
+                                    <span class="inline-flex px-2.5 py-1 rounded-full border border-blue-200 bg-blue-100 text-blue-700 text-xs font-bold">اشتراك جديد {{ $requestedPlan ? '(' . $requestedPlan . ')' : '' }}</span>
+                                @else
+                                    <span class="inline-flex px-2.5 py-1 rounded-full border border-gray-200 bg-gray-100 text-gray-700 text-xs font-bold">تجديد</span>
+                                @endif
+                            </td>
                             <td class="py-3 px-2">{{ number_format((float)$payment->amount, 2) }} {{ $payment->currency }}</td>
                             <td class="py-3 px-2">{{ $payment->payment_method }}</td>
                             <td class="py-3 px-2"><span class="inline-flex px-2.5 py-1 rounded-full border border-amber-200 bg-amber-100 text-amber-700 text-xs font-bold">pending</span></td>
@@ -221,7 +320,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-6 text-center text-gray-500">لا توجد مدفوعات معلقة</td>
+                            <td colspan="6" class="py-6 text-center text-gray-500">لا توجد مدفوعات معلقة</td>
                         </tr>
                     @endforelse
                 </tbody>

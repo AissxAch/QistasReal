@@ -12,7 +12,7 @@
                 <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
                     <tr>
                         <td align="center" style="background:#ffffff;padding:36px 40px 20px;">
-                            <img src="{{ config('app.url') }}/assets/logo.png" alt="{{ config('app.name') }}" width="180" style="display:block;height:auto;max-width:180px;">
+                            <img src="https://raw.githubusercontent.com/AissxAch/assets/refs/heads/main/fulllogo.png" alt="{{ config('app.name') }}" width="180" style="display:block;height:auto;max-width:180px;">
                         </td>
                     </tr>
                     <tr>

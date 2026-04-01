@@ -37,6 +37,26 @@
         </div>
 
         <div class="form-group">
+            <label class="form-label" for="law_firm_name">اسم المكتب</label>
+            <div class="form-input-wrapper">
+                <input class="form-input" id="law_firm_name" type="text" name="law_firm_name" value="{{ old('law_firm_name') }}" required>
+                <svg class="form-input-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21h18M5 21V7l8-4 8 4v14M9 9h.01M15 9h.01M9 13h.01M15 13h.01"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="law_firm_phone">هاتف المكتب (اختياري)</label>
+            <div class="form-input-wrapper">
+                <input class="form-input" id="law_firm_phone" type="text" name="law_firm_phone" value="{{ old('law_firm_phone') }}" dir="ltr">
+                <svg class="form-input-icon" width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a2 2 0 011.94 1.515l.66 2.64a2 2 0 01-.45 1.82l-1.27 1.27a16 16 0 006.364 6.364l1.27-1.27a2 2 0 011.82-.45l2.64.66A2 2 0 0121 15.72V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="form-group">
             <label class="form-label" for="password">كلمة المرور</label>
             <div class="form-input-wrapper">
                 <input class="form-input" id="password" type="password" name="password" required autocomplete="new-password">

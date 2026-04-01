@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
+    private const BASIC_PLAN_PRICE = 2500;
+    private const BASIC_PLAN_CURRENCY = 'DZD';
+
     public function locked()
     {
         $user = Auth::user();
@@ -125,5 +128,59 @@ class SubscriptionController extends Controller
         ]);
 
         return back()->with('success', 'تم إرسال طلب التجديد بنجاح، وسيتم مراجعته من الإدارة.');
+    }
+
+    public function purchaseBasic(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+        $lawFirm = $user?->lawFirm;
+        $subscription = $lawFirm?->subscriptions()->latest()->first();
+
+        abort_unless($lawFirm, 403);
+        abort_unless($user?->isOwner(), 403);
+
+        if ($subscription) {
+            return back()->with('error', 'لديك اشتراك بالفعل، استخدم طلب التجديد بدلًا من طلب شراء جديد.');
+        }
+
+        $hasPendingNewSubscriptionRequest = Payment::query()
+            ->where('law_firm_id', $lawFirm->id)
+            ->where('status', 'pending')
+            ->whereNull('subscription_id')
+            ->whereJsonContains('payment_data->request_type', 'new_subscription')
+            ->exists();
+
+        if ($hasPendingNewSubscriptionRequest) {
+            return back()->with('error', 'لديك طلب اشتراك أساسي قيد المراجعة بالفعل.');
+        }
+
+        $validated = $request->validate([
+            'payment_method' => ['required', 'in:ccp,bank_transfer,cash'],
+            'transaction_id' => ['nullable', 'string', 'max:255'],
+            'note' => ['nullable', 'string', 'max:500'],
+        ], [
+            'payment_method.required' => 'طريقة الدفع مطلوبة',
+            'payment_method.in' => 'طريقة الدفع المحددة غير صالحة',
+        ]);
+
+        Payment::create([
+            'law_firm_id' => $lawFirm->id,
+            'subscription_id' => null,
+            'amount' => self::BASIC_PLAN_PRICE,
+            'currency' => self::BASIC_PLAN_CURRENCY,
+            'payment_method' => $validated['payment_method'],
+            'status' => 'pending',
+            'transaction_id' => $validated['transaction_id'] ?? null,
+            'payment_data' => [
+                'purchase_request' => true,
+                'request_type' => 'new_subscription',
+                'requested_plan' => 'basic',
+                'requested_by' => Auth::id(),
+                'requested_at' => now()->toDateTimeString(),
+                'note' => $validated['note'] ?? null,
+            ],
+        ]);
+
+        return back()->with('success', 'تم إرسال طلب شراء الخطة الأساسية بنجاح، وسيتم مراجعته من الإدارة.');
     }
 }
