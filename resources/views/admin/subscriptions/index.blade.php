@@ -79,7 +79,6 @@
                 <select name="plan" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" required>
                     <option value="basic">basic</option>
                     <option value="office">office</option>
-                    <option value="premium">premium</option>
                     <option value="enterprise">enterprise / مؤسسي</option>
                 </select>
             </div>
@@ -150,7 +149,6 @@
                     <option value="all" @selected(($subscriptionPlan ?? 'all') === 'all')>الكل</option>
                     <option value="basic" @selected(($subscriptionPlan ?? 'all') === 'basic')>basic</option>
                     <option value="office" @selected(($subscriptionPlan ?? 'all') === 'office')>office</option>
-                    <option value="premium" @selected(($subscriptionPlan ?? 'all') === 'premium')>premium</option>
                     <option value="enterprise" @selected(($subscriptionPlan ?? 'all') === 'enterprise')>enterprise</option>
                 </select>
             </div>

@@ -18,7 +18,7 @@ use Illuminate\Support\Str;
 
 class TeamController extends Controller
 {
-    private const INVITATION_EXPIRY_HOURS = 24;
+    private const INVITATION_EXPIRY_DAYS = 7;
 
     public function index()
     {
@@ -73,7 +73,7 @@ class TeamController extends Controller
                 'specialty' => $request->specialty,
                 'invited_by_user_id' => $owner->id,
                 'invited_at' => now(),
-                'invitation_expires_at' => now()->addHours(self::INVITATION_EXPIRY_HOURS),
+                'invitation_expires_at' => now()->addDays(self::INVITATION_EXPIRY_DAYS),
             ]);
 
             $this->sendInvitationEmail($member, $firmName);
@@ -96,7 +96,7 @@ class TeamController extends Controller
         });
 
         return redirect()->route('team.index')
-            ->with('success', 'تمت إضافة عضو الفريق وإرسال دعوة التفعيل لمدة 24 ساعة بنجاح');
+            ->with('success', 'تمت إضافة عضو الفريق وإرسال دعوة التفعيل لمدة 7 أيام بنجاح');
     }
 
     public function resendInvitation(User $team)
@@ -121,7 +121,7 @@ class TeamController extends Controller
             $team->forceFill([
                 'invited_by_user_id' => $owner->id,
                 'invited_at' => now(),
-                'invitation_expires_at' => now()->addHours(self::INVITATION_EXPIRY_HOURS),
+                'invitation_expires_at' => now()->addDays(self::INVITATION_EXPIRY_DAYS),
             ])->save();
 
             $this->sendInvitationEmail($team, $firmName);
@@ -140,7 +140,7 @@ class TeamController extends Controller
             );
         });
 
-        return back()->with('success', 'تمت إعادة إرسال دعوة التفعيل بنجاح لمدة 24 ساعة إضافية.');
+        return back()->with('success', 'تمت إعادة إرسال دعوة التفعيل بنجاح لمدة 7 أيام إضافية.');
     }
 
     public function show(User $team)
@@ -290,9 +290,8 @@ class TeamController extends Controller
         }
 
         return match ($plan) {
-            'basic' => 2,
+            'basic' => 1,
             'office' => 5,
-            'premium' => null,
             default => null,
         };
     }

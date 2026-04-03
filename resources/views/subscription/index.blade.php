@@ -125,10 +125,18 @@
                 </div>
 
                 @if(Auth::user()?->isOwner())
-                    <form method="POST" action="{{ route('subscription.purchase-basic') }}" class="rounded-2xl border border-gray-200 p-5 space-y-4">
+                    <form method="POST" action="{{ route('subscription.request-plan') }}" class="rounded-2xl border border-gray-200 p-5 space-y-4">
                         @csrf
-                        <h3 class="text-base font-extrabold text-gray-900">طلب شراء الخطة الأساسية</h3>
-                        <p class="text-sm text-gray-600">يمكنك إرسال طلب شراء الخطة الأساسية وسيظهر مباشرة في لوحة السوبر أدمن للمراجعة والاعتماد.</p>
+                        <h3 class="text-base font-extrabold text-gray-900">طلب اشتراك جديد</h3>
+                        <p class="text-sm text-gray-600">يمكنك إرسال طلب للخطة الأساسية أو الاحترافية، وسيظهر مباشرة في لوحة السوبر أدمن للمراجعة والاعتماد. أما الخطة المؤسسية فهي تتم فقط عبر التواصل مع الإدارة.</p>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-600 mb-1">الخطة المطلوبة</label>
+                            <select name="plan" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" required>
+                                <option value="basic">الأساسي — 2,500 د.ج / شهر</option>
+                                <option value="office">الاحترافي — 8,000 د.ج / شهر</option>
+                            </select>
+                        </div>
 
                         <div>
                             <label class="block text-xs font-bold text-gray-600 mb-1">طريقة الدفع</label>
@@ -149,13 +157,18 @@
                             <textarea name="note" rows="3" class="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm" placeholder="مثال: تم الإيداع في CCP اليوم صباحًا"></textarea>
                         </div>
 
-                        <div class="rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-700">
-                            مبلغ الخطة الأساسية: <span class="font-extrabold text-gray-900">2,500.00 DZD</span>
+                        <div class="rounded-xl bg-gray-50 border border-gray-200 px-4 py-3 text-sm text-gray-700 space-y-1">
+                            <p>الأساسي: <span class="font-extrabold text-gray-900">2,500.00 DZD</span></p>
+                            <p>الاحترافي: <span class="font-extrabold text-gray-900">8,000.00 DZD</span></p>
+                        </div>
+
+                        <div class="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700">
+                            الخطة المؤسسية متاحة فقط عبر التواصل مع الإدارة أو مسؤول الاشتراك.
                         </div>
 
                         <button type="submit" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1c5bb8] text-white text-sm font-bold hover:bg-[#174a95] transition">
                             <i class="fas fa-paper-plane"></i>
-                            <span>إرسال طلب شراء الخطة الأساسية</span>
+                            <span>إرسال طلب الاشتراك</span>
                         </button>
                     </form>
                 @else

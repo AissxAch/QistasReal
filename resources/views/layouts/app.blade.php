@@ -433,8 +433,8 @@
                                 <span class="nav-link-icon"><i class="fas fa-user-group"></i></span>
                                 <span>الفريق</span>
                             </a>
-                            <a href="{{ route('settings') }}"
-                               class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
+                            <a href="{{ route('settings.firm') }}"
+                               class="nav-link {{ request()->routeIs('settings.firm*') ? 'active' : '' }}">
                                 <span class="nav-link-icon"><i class="fas fa-building"></i></span>
                                 <span>إدارة المكتب</span>
                             </a>
@@ -475,10 +475,10 @@
                             <span class="nav-link-icon"><i class="fas fa-credit-card"></i></span>
                             <span>الاشتراك</span>
                         </a>
-                        <a href="{{ route('settings') }}"
-                           class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
-                            <span class="nav-link-icon"><i class="fas fa-gear"></i></span>
-                            <span>الإعدادات</span>
+                        <a href="{{ route('settings.profile') }}"
+                           class="nav-link {{ request()->routeIs('settings.profile*') ? 'active' : '' }}">
+                            <span class="nav-link-icon"><i class="fas fa-user-circle"></i></span>
+                            <span>الملف الشخصي</span>
                         </a>
                     </div>
                 </div>
@@ -487,7 +487,7 @@
 
         {{-- User --}}
         <div class="sidebar-user">
-            <div class="user-avatar">{{ substr(Auth::user()->name, 0, 1) }}</div>
+            <x-user-avatar :user="Auth::user()" size="sm" />
             <div class="flex-1 min-w-0">
                 <div class="user-name truncate">{{ Auth::user()->name }}</div>
                 <div class="user-email truncate">{{ Auth::user()->email }}</div>
@@ -572,8 +572,8 @@
                                 <span class="nav-link-icon"><i class="fas fa-user-group"></i></span>
                                 <span>الفريق</span>
                             </a>
-                            <a href="{{ route('settings') }}" @click="sidebarOpen = false"
-                               class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
+                            <a href="{{ route('settings.firm') }}" @click="sidebarOpen = false"
+                               class="nav-link {{ request()->routeIs('settings.firm*') ? 'active' : '' }}">
                                 <span class="nav-link-icon"><i class="fas fa-building"></i></span>
                                 <span>إدارة المكتب</span>
                             </a>
@@ -611,10 +611,10 @@
                             <span class="nav-link-icon"><i class="fas fa-credit-card"></i></span>
                             <span>الاشتراك</span>
                         </a>
-                        <a href="{{ route('settings') }}" @click="sidebarOpen = false"
-                           class="nav-link {{ request()->routeIs('settings') ? 'active' : '' }}">
-                            <span class="nav-link-icon"><i class="fas fa-gear"></i></span>
-                            <span>الإعدادات</span>
+                        <a href="{{ route('settings.profile') }}" @click="sidebarOpen = false"
+                           class="nav-link {{ request()->routeIs('settings.profile*') ? 'active' : '' }}">
+                            <span class="nav-link-icon"><i class="fas fa-user-circle"></i></span>
+                            <span>الملف الشخصي</span>
                         </a>
                     </div>
                 </div>
@@ -622,7 +622,7 @@
         </nav>
 
         <div class="sidebar-user">
-            <div class="user-avatar">{{ substr(Auth::user()->name, 0, 1) }}</div>
+            <x-user-avatar :user="Auth::user()" size="sm" />
             <div class="flex-1 min-w-0">
                 <div class="user-name truncate">{{ Auth::user()->name }}</div>
                 <div class="user-email truncate">{{ Auth::user()->email }}</div>
@@ -736,7 +736,7 @@
                     {{-- User (desktop) --}}
                     <div x-data="{ open: false }" class="relative hidden lg:block">
                         <button @click="open = !open" class="flex items-center gap-2.5 px-2.5 py-1.5 rounded-xl hover:bg-gray-100 transition">
-                            <div class="user-avatar" style="width:32px;height:32px;border-radius:8px;font-size:0.75rem;">{{ substr(Auth::user()->name, 0, 1) }}</div>
+                            <x-user-avatar :user="Auth::user()" size="xs" class="gap-0" />
                             <div class="text-right hidden xl:block">
                                 <p class="text-xs font-bold text-gray-800 leading-tight">{{ Auth::user()->name }}</p>
                                 <p class="text-xs text-gray-400 leading-tight">محامي</p>
@@ -745,10 +745,16 @@
                         </button>
                         <div x-show="open" @click.away="open = false" x-cloak
                              class="absolute left-0 top-full mt-2 w-48 bg-white border border-gray-100 rounded-2xl shadow-xl overflow-hidden z-50 py-1">
-                            <a href="{{ route('settings') }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition">
-                                <i class="fas fa-gear w-4 text-gray-400"></i>
-                                الإعدادات
+                            <a href="{{ route('settings.profile') }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                <i class="fas fa-user-circle w-4 text-gray-400"></i>
+                                الملف الشخصي
                             </a>
+                            @if(Auth::user()->isOwner())
+                            <a href="{{ route('settings.firm') }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition">
+                                <i class="fas fa-building w-4 text-gray-400"></i>
+                                إعدادات المكتب
+                            </a>
+                            @endif
                             <a href="{{ route('subscription') }}" class="flex items-center gap-2.5 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition">
                                 <i class="fas fa-credit-card w-4 text-gray-400"></i>
                                 الاشتراك

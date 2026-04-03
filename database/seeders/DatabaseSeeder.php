@@ -154,7 +154,7 @@ class DatabaseSeeder extends Seeder
                     'email_verified_at' => now(),
                     'activated_at' => now(),
                     'invited_at' => $index === 0 ? null : now()->subDays(10),
-                    'invitation_expires_at' => $index === 0 ? null : now()->subDays(9),
+                    'invitation_expires_at' => $index === 0 ? null : now()->subDays(3),
                 ]);
 
                 $createdUsers[] = $user;
@@ -173,7 +173,7 @@ class DatabaseSeeder extends Seeder
                 'bio' => 'دعوة قيد التفعيل.',
                 'invited_by_user_id' => $owner?->id,
                 'invited_at' => now()->subHours(2),
-                'invitation_expires_at' => now()->addHours(22),
+                'invitation_expires_at' => now()->addDays(7)->subHours(2),
                 'activated_at' => null,
             ]);
 

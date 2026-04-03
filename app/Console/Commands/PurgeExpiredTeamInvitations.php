@@ -11,7 +11,7 @@ class PurgeExpiredTeamInvitations extends Command
 {
     protected $signature = 'team-invitations:purge-expired';
 
-    protected $description = 'Delete invited team members who did not activate within 24 hours';
+    protected $description = 'Delete invited team members who did not activate within 7 days';
 
     public function handle(): int
     {
@@ -42,7 +42,7 @@ class PurgeExpiredTeamInvitations extends Command
                     oldValues: $snapshot,
                     newValues: [
                         'deleted_at' => now()->toDateTimeString(),
-                        'reason' => 'Invitation not activated within 24 hours',
+                        'reason' => 'Invitation not activated within 7 days',
                     ],
                 );
 

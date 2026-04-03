@@ -23,7 +23,7 @@ class SubscriptionAdminController extends Controller
         }
 
         $subscriptionPlan = strtolower((string) $request->query('subscription_plan', 'all'));
-        if (!in_array($subscriptionPlan, ['all', 'basic', 'office', 'premium', 'enterprise'], true)) {
+        if (!in_array($subscriptionPlan, ['all', 'basic', 'office', 'enterprise'], true)) {
             $subscriptionPlan = 'all';
         }
 
@@ -125,7 +125,7 @@ class SubscriptionAdminController extends Controller
 
         $validated = $request->validate([
             'law_firm_id' => ['required', 'exists:law_firms,id'],
-            'plan' => ['required', 'in:basic,office,premium,enterprise'],
+            'plan' => ['required', 'in:basic,office,enterprise'],
             'status' => ['required', 'in:trial,active,expired,suspended,cancelled'],
             'starts_at' => ['required', 'date'],
             'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],

@@ -58,7 +58,7 @@ The app uses Laravel Jetstream + Livewire for authentication/profile/team founda
 
 - Authenticated + verified user access
 - Role model: `admin`, `owner`, `lawyer`, `assistant`
-- Team member invitation flow (24-hour activation window)
+- Team member invitation flow (7-day activation window)
 - Invitation resend support
 - Automatic purge for expired, unactivated invitations
 

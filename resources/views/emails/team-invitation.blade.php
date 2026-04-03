@@ -43,7 +43,7 @@
                             </p>
 
                             <p style="margin:0 0 16px;color:#7c2d12;background:#fff7ed;border:1px solid #fdba74;border-radius:10px;padding:14px 16px;">
-                                يجب تفعيل الحساب خلال <strong>24 ساعة</strong> من وقت استلام هذه الرسالة، وإلا سيتم حذف الدعوة والحساب تلقائياً.
+                                يجب تفعيل الحساب خلال <strong>7 أيام</strong> من وقت استلام هذه الرسالة، وإلا سيتم حذف الدعوة والحساب تلقائياً.
                             </p>
 
                             {{-- Info card --}}

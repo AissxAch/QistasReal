@@ -34,7 +34,13 @@
             <div class="lg:col-span-2">
                 <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
                     <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
-                        <h2 class="text-lg font-bold text-gray-800">بيانات العضو</h2>
+                        <div class="flex items-center gap-4">
+                            <x-user-avatar :user="$member" size="lg" />
+                            <div>
+                                <h2 class="text-lg font-bold text-gray-800">{{ $member->name }}</h2>
+                                <p class="text-sm text-gray-500">{{ $member->email }}</p>
+                            </div>
+                        </div>
                     </div>
                     <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>

@@ -85,11 +85,15 @@ Route::middleware(['auth', 'verified', 'non_admin', 'subscription.access'])->gro
     // Subscription
     Route::get('subscription', [SubscriptionController::class, 'index'])->name('subscription');
     Route::post('subscription/renew', [SubscriptionController::class, 'renew'])->name('subscription.renew');
-    Route::post('subscription/purchase-basic', [SubscriptionController::class, 'purchaseBasic'])->name('subscription.purchase-basic');
+    Route::post('subscription/request-plan', [SubscriptionController::class, 'requestPlan'])->name('subscription.request-plan');
 
-    // Settings (firm + personal profile only — password handled by Jetstream /profile)
-    Route::get('settings',          [SettingsController::class, 'index'])        ->name('settings');
-    Route::post('settings/firm',    [SettingsController::class, 'updateFirm'])   ->name('settings.firm');
-    Route::post('settings/profile', [SettingsController::class, 'updateProfile'])->name('settings.profile');
+    // Settings — split into two separate pages
+    Route::get('settings',                fn() => redirect()->route('settings.profile'))->name('settings');
+    Route::get('settings/profile',        [SettingsController::class, 'showProfile'])    ->name('settings.profile');
+    Route::post('settings/profile',       [SettingsController::class, 'updateProfile'])  ->name('settings.profile.update');
+    Route::delete('settings/avatar',      [SettingsController::class, 'removeAvatar'])   ->name('settings.avatar.remove');
+    Route::get('settings/firm',           [SettingsController::class, 'showFirm'])       ->name('settings.firm');
+    Route::post('settings/firm',          [SettingsController::class, 'updateFirm'])     ->name('settings.firm.update');
+    Route::delete('settings/firm/logo',   [SettingsController::class, 'removeFirmLogo']) ->name('settings.firm.logo.remove');
 
 });

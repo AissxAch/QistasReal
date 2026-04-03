@@ -10,8 +10,18 @@ use Illuminate\Support\Facades\Auth;
 
 class SubscriptionController extends Controller
 {
-    private const BASIC_PLAN_PRICE = 2500;
-    private const BASIC_PLAN_CURRENCY = 'DZD';
+    private const REQUESTABLE_PLANS = [
+        'basic' => [
+            'price' => 2500,
+            'currency' => 'DZD',
+            'name' => 'الخطة الأساسية',
+        ],
+        'office' => [
+            'price' => 8000,
+            'currency' => 'DZD',
+            'name' => 'الخطة الاحترافية',
+        ],
+    ];
 
     public function locked()
     {
@@ -53,19 +63,13 @@ class SubscriptionController extends Controller
             'basic' => [
                 'name' => 'الأساسي',
                 'price' => 2500,
-                'users' => 2,
+                'users' => 1,
                 'cases' => 50,
             ],
             'office' => [
                 'name' => 'الاحترافي',
                 'price' => 8000,
                 'users' => 5,
-                'cases' => 'غير محدود',
-            ],
-            'premium' => [
-                'name' => 'المتميز+',
-                'price' => 9000,
-                'users' => 'غير محدود',
                 'cases' => 'غير محدود',
             ],
             'enterprise' => [
@@ -130,7 +134,7 @@ class SubscriptionController extends Controller
         return back()->with('success', 'تم إرسال طلب التجديد بنجاح، وسيتم مراجعته من الإدارة.');
     }
 
-    public function purchaseBasic(Request $request): RedirectResponse
+    public function requestPlan(Request $request): RedirectResponse
     {
         $user = Auth::user();
         $lawFirm = $user?->lawFirm;
@@ -151,36 +155,42 @@ class SubscriptionController extends Controller
             ->exists();
 
         if ($hasPendingNewSubscriptionRequest) {
-            return back()->with('error', 'لديك طلب اشتراك أساسي قيد المراجعة بالفعل.');
+            return back()->with('error', 'لديك طلب اشتراك جديد قيد المراجعة بالفعل.');
         }
 
         $validated = $request->validate([
+            'plan' => ['required', 'in:basic,office'],
             'payment_method' => ['required', 'in:ccp,bank_transfer,cash'],
             'transaction_id' => ['nullable', 'string', 'max:255'],
             'note' => ['nullable', 'string', 'max:500'],
         ], [
+            'plan.required' => 'اختيار الخطة مطلوب',
+            'plan.in' => 'الخطة المحددة غير متاحة',
             'payment_method.required' => 'طريقة الدفع مطلوبة',
             'payment_method.in' => 'طريقة الدفع المحددة غير صالحة',
         ]);
 
+        $requestedPlan = $validated['plan'];
+        $planConfig = self::REQUESTABLE_PLANS[$requestedPlan];
+
         Payment::create([
             'law_firm_id' => $lawFirm->id,
             'subscription_id' => null,
-            'amount' => self::BASIC_PLAN_PRICE,
-            'currency' => self::BASIC_PLAN_CURRENCY,
+            'amount' => $planConfig['price'],
+            'currency' => $planConfig['currency'],
             'payment_method' => $validated['payment_method'],
             'status' => 'pending',
             'transaction_id' => $validated['transaction_id'] ?? null,
             'payment_data' => [
                 'purchase_request' => true,
                 'request_type' => 'new_subscription',
-                'requested_plan' => 'basic',
+                'requested_plan' => $requestedPlan,
                 'requested_by' => Auth::id(),
                 'requested_at' => now()->toDateTimeString(),
                 'note' => $validated['note'] ?? null,
             ],
         ]);
 
-        return back()->with('success', 'تم إرسال طلب شراء الخطة الأساسية بنجاح، وسيتم مراجعته من الإدارة.');
+        return back()->with('success', 'تم إرسال طلب ' . $planConfig['name'] . ' بنجاح، وسيتم مراجعته من الإدارة.');
     }
 }

@@ -4,6 +4,24 @@
 
 @section('content')
 <div class="space-y-6">
+    @if(session('success'))
+        <div class="bg-green-50 border border-green-200 text-green-800 rounded-2xl p-4">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-circle-check"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-50 border border-red-200 text-red-800 rounded-2xl p-4">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-circle-exclamation"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
+
     <!-- Header -->
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>

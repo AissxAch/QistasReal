@@ -110,9 +110,7 @@
             <div class="bg-white rounded-2xl shadow-md border border-gray-100 overflow-hidden">
                 <div class="px-5 py-4 border-b border-gray-100 bg-gray-50/70 flex items-center justify-between gap-3">
                     <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-12 h-12 rounded-full {{ $avatarClass }} font-bold flex items-center justify-center shrink-0">
-                            {{ mb_substr($member->name, 0, 1) }}
-                        </div>
+                        <x-user-avatar :user=\"$member\" size=\"lg\" class=\"shrink-0\" />
                         <div class="min-w-0">
                             <p class="font-bold text-gray-900 truncate">{{ $member->name }}</p>
                             <div class="mt-1 flex flex-wrap items-center gap-2">

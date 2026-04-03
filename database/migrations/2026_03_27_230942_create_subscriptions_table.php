@@ -18,6 +18,12 @@ return new class extends Migration
             $table->timestamp('trial_ends_at')->nullable();
             $table->decimal('amount', 8, 2);
             $table->string('currency')->default('DZD');
+            $table->string('contract_number')->nullable();
+            $table->timestamp('contract_starts_at')->nullable();
+            $table->timestamp('contract_ends_at')->nullable();
+            $table->unsignedInteger('user_limit')->nullable();
+            $table->string('billing_cycle')->nullable();
+            $table->string('enterprise_account_name')->nullable();
             $table->timestamps();
         });
     }
