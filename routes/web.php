@@ -60,7 +60,6 @@ Route::middleware(['auth', 'verified', 'non_admin', 'subscription.access'])->gro
 
     // Cases
     Route::resource('cases', CaseController::class);
-    Route::get('cases-scan', fn() => view('cases.scan'))->name('cases.scan');
 
     // Clients
     Route::resource('clients', ClientController::class);

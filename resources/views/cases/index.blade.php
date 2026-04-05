@@ -29,11 +29,6 @@
             <p class="text-sm text-gray-500 mt-1">إدارة ومتابعة جميع القضايا في مكان واحد</p>
         </div>
         <div class="flex gap-3">
-            <a href="{{ route('cases.scan') }}"
-               class="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-[#1c5bb8] text-[#1c5bb8] hover:bg-[#1c5bb8]/5 transition shadow-sm font-medium">
-                <i class="fas fa-wand-magic-sparkles text-sm"></i>
-                <span>استيراد بالذكاء الاصطناعي</span>
-            </a>
             <a href="{{ route('cases.create') }}" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#1c5bb8] text-white hover:bg-[#0f2d62] transition shadow-sm">
                 <i class="fas fa-plus-circle text-sm"></i>
                 <span>إضافة قضية</span>
